@@ -11,34 +11,74 @@ class Counter extends React.Component {
 
     this.state = {
       count: 0,
+      lastPlay: "",
+      gameStatus: "",
     };
   }
 
-  handleAttack() {
+  handleAttack = () => {
     //alert("Attack clicked");
     //async call to state count
 
     this.setState((previousState) => {
       let newCount = previousState.count + Math.round(Math.random() * 10);
+      
+      this.checkGameStatus();
 
       return {
         count: newCount,
+        lastPlay: previousState.lastPlay = "Attack",
+        gameStatus: previousState.gameStatus
       };
     });
   }
 
-  handleDefense() {
+  checkGameStatus = () => {
+    this.setState((previousState) => {
+      let currentCount = previousState.count;
+      
+      if (currentCount >= 10)
+      {
+        //previousState.gameStatus = "You win";
+
+        return {
+        count: currentCount,
+        lastPlay: previousState.lastPlay,
+        gameStatus: "You win"
+      };
+      }
+
+      if (currentCount <= -10)
+      {
+        //previousState.gameStatus = "You lose";
+
+        return {
+        count: currentCount,
+        lastPlay: previousState.lastPlay,
+        gameStatus: "You lose"
+      };
+      }
+
+      
+    });
+  }
+
+  handleDefense = () => {
     //alert("Defend clicked");
     this.setState((previousState) => {
       let newCount = previousState.count - Math.round(Math.random() * 10);
 
+      this.checkGameStatus();
+
       return {
         count: newCount,
+        lastPlay: previousState.lastPlay = "Defense",
+        gameStatus: previousState.gameStatus
       };
     });
   }
 
-  handleRandomPlay() {
+  handleRandomPlay =() => {
     let playMode = Math.round(Math.random());
 
     if (playMode == 0) {
@@ -48,13 +88,24 @@ class Counter extends React.Component {
     }
   }
 
+  handleReset = () => {
+    //alert("Defend clicked");
+    this.setState(() => {     
+      return {
+        count: 0,
+        gameStatus: "",
+        lastPlay: ""
+      };
+    });
+  }
+
   render() {
     return (
       <div className="row text-black text-center">
         <h1>Game Score: {this.state.count}</h1>
         <p>YOu win at +10 points and lost at -10 points!</p>
-        <p>Last Play: </p>
-        <h3>Game Status : </h3>
+        <p>Last Play: {this.state.lastPlay}</p>
+        <h3>Game Status : {this.state.gameStatus}</h3>
         <div className="col-6 col-md-3 offset-md-3">
           <img
             style={{
@@ -81,9 +132,9 @@ class Counter extends React.Component {
           />
         </div>
         <div className="col-12 col-md-4 offset-md-4">
-          <button className="btn btn-secondary w-100 mt-2" onClick={this.handleRandomPlan}>Random Plan</button>
+          <button className="btn btn-secondary w-100 mt-2" onClick={this.handleRandomPlay}>Random Play</button>
           <br />
-          <button className="btn btn-warning w-100 mt-2">Restart</button>
+          <button className="btn btn-warning w-100 mt-2" onClick={this.handleReset}>Reset</button>
         </div>
       </div>
     );
